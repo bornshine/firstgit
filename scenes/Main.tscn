@@ -1,0 +1,139 @@
+[gd_scene load_steps=17 format=3 uid="uid://wnikahw6mmof"]
+
+[ext_resource type="Texture2D" uid="uid://bxgvq41e7vypf" path="res://icon.svg" id="1_elqb8"]
+[ext_resource type="Script" uid="uid://dp2wyv3xmf50l" path="res://scripts/main.gd" id="2_main"]
+[ext_resource type="Script" uid="uid://dtxjmpra347ju" path="res://scripts/peg_board.gd" id="3_peg"]
+[ext_resource type="Script" uid="uid://cer180d3pskh4" path="res://scripts/launcher.gd" id="4_launch"]
+[ext_resource type="Script" path="res://scripts/entities/pocket.gd" id="5_pocket"]
+[ext_resource type="Script" path="res://scripts/systems/round_manager.gd" id="6_round"]
+[ext_resource type="PackedScene" path="res://scenes/ui/HUD.tscn" id="7_hud"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_floor"]
+size = Vector2(1920, 50)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_leftwall"]
+size = Vector2(20, 1080)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rightwall"]
+size = Vector2(20, 1080)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ceiling"]
+size = Vector2(1920, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_bottomzone"]
+size = Vector2(640, 40)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pocket_strip"]
+size = Vector2(640, 10)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_pocket_fallback"]
+size = Vector2(640, 30)
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_ball"]
+bounce = 0.8
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ball"]
+radius = 20.0
+
+[node name="Main" type="Node2D" unique_id=1504968002]
+script = ExtResource("2_main")
+
+[node name="Floor" type="StaticBody2D" parent="." unique_id=1687415908]
+position = Vector2(960, 1055)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Floor" unique_id=773929865]
+shape = SubResource("RectangleShape2D_floor")
+
+[node name="LeftWall" type="StaticBody2D" parent="." unique_id=643492906]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="LeftWall" unique_id=758618850]
+position = Vector2(10, 540)
+shape = SubResource("RectangleShape2D_leftwall")
+
+[node name="RightWall" type="StaticBody2D" parent="." unique_id=1518019935]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RightWall" unique_id=1315624128]
+position = Vector2(1910, 540)
+shape = SubResource("RectangleShape2D_rightwall")
+
+[node name="Ceiling" type="StaticBody2D" parent="." unique_id=442111515]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Ceiling" unique_id=1660124657]
+position = Vector2(960, 10)
+shape = SubResource("RectangleShape2D_ceiling")
+
+[node name="PegBoard" type="Node2D" parent="." unique_id=670252707]
+script = ExtResource("3_peg")
+
+[node name="BottomZoneLeft" type="Area2D" parent="."]
+position = Vector2(320, 1010)
+script = ExtResource("5_pocket")
+zone_color = Color(0.8, 0.8, 0.8, 0.15)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BottomZoneLeft"]
+shape = SubResource("RectangleShape2D_bottomzone")
+
+[node name="Pocket" type="Area2D" parent="."]
+position = Vector2(960, 995)
+script = ExtResource("5_pocket")
+is_pocket = true
+zone_color = Color(0.3, 1, 0.4, 0.35)
+
+[node name="StripShape" type="CollisionShape2D" parent="Pocket"]
+shape = SubResource("RectangleShape2D_pocket_strip")
+
+[node name="FallbackShape" type="CollisionShape2D" parent="Pocket"]
+position = Vector2(0, 20)
+shape = SubResource("RectangleShape2D_pocket_fallback")
+
+[node name="BottomZoneRight" type="Area2D" parent="."]
+position = Vector2(1600, 1010)
+script = ExtResource("5_pocket")
+zone_color = Color(0.8, 0.8, 0.8, 0.15)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BottomZoneRight"]
+shape = SubResource("RectangleShape2D_bottomzone")
+
+[node name="Launcher" type="Node2D" parent="." unique_id=1678994924]
+position = Vector2(1600, 900)
+script = ExtResource("4_launch")
+ball_template = NodePath("../BallTemplate")
+round_manager_path = NodePath("../RoundManager")
+
+[node name="Sprite2D" type="Sprite2D" parent="Launcher" unique_id=407945230]
+modulate = Color(0.5, 0.5, 0.5, 0.9)
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("1_elqb8")
+
+[node name="BallTemplate" type="RigidBody2D" parent="." unique_id=904962119]
+visible = false
+position = Vector2(539, 236)
+physics_material_override = SubResource("PhysicsMaterial_ball")
+freeze = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="BallTemplate" unique_id=1030244982]
+position = Vector2(0, -39)
+shape = SubResource("CircleShape2D_ball")
+
+[node name="Sprite2D" type="Sprite2D" parent="BallTemplate" unique_id=869707673]
+position = Vector2(2, -37)
+scale = Vector2(0.3, 0.3)
+texture = ExtResource("1_elqb8")
+
+[node name="RoundManager" type="Node2D" parent="."]
+script = ExtResource("6_round")
+launcher_path = NodePath("../Launcher")
+pegboard_path = NodePath("../PegBoard")
+
+[node name="HUD" parent="." instance=ExtResource("7_hud")]
+round_manager_path = NodePath("../RoundManager")
+launcher_path = NodePath("../Launcher")
+
+[connection signal="ball_entered_pocket" from="Pocket" to="RoundManager" method="_on_ball_entered_pocket"]
+[connection signal="ball_launched" from="Launcher" to="RoundManager" method="_on_ball_launched"]
+[connection signal="charge_updated" from="Launcher" to="HUD" method="_on_charge_updated"]
+[connection signal="state_changed" from="RoundManager" to="HUD" method="_on_state_changed"]
+[connection signal="stock_changed" from="RoundManager" to="HUD" method="_on_stock_changed"]
+[connection signal="time_changed" from="RoundManager" to="HUD" method="_on_time_changed"]
+[connection signal="settle_requested" from="HUD" to="RoundManager" method="_on_settle_requested"]
+[connection signal="retry_requested" from="HUD" to="RoundManager" method="_on_retry_requested"]

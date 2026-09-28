@@ -1,0 +1,21 @@
+{
+	"round": {
+		"duration_seconds": 90.0,
+		"initial_stock": 50,
+		"target_stock": 60
+	},
+	"pocket": {
+		"ball_reward": 3
+	},
+	"peg": {
+		"bounce": 0.65
+	},
+	"launcher": {
+		"charge_time": 3.0,
+		"min_impulse": 600.0,
+		"max_impulse": 1600.0,
+		"angle_jitter_deg": 5.0,
+		"jitter_free_threshold": 0.2,
+		"aim_angle_limit_deg": 80.0
+	}
+}
